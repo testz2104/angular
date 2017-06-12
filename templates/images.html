@@ -1,0 +1,39 @@
+<div class="container">
+	<div class="page-header">
+		<div style="width: 320px;">
+			<h1>Image Listings</h1>
+			<p class="lead">Basic Image Listings.</p>
+		</div>
+		<div ng-controller="LoginController" style="width: 320px; float: right; position: relative; bottom: 70px;">
+			<a href="javascript:void(0);" ng-click="logout()">Logout</a>
+		</div>
+		<div style="width: 320px; float: right; position: relative; top: 58px; right: 230px;">
+			<a href="javascript:void(0);" ng-click="addImage()">Add Image</a>
+		</div>
+		<div style="clear: both"></div>
+	</div>
+	
+	<h2 class="sub-header">Image Listings</h2>
+		<div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Guid</th>
+                  <th>Image Title</th>
+                  <th>Image Type</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="(key, image) in images.data">
+                  <td>{{image.id}}</td>
+                  <td>{{image.guid}}</td>
+                  <td>{{image.image_title}}</td>
+                  <td>{{image.image_type}}</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+		</div>
+</div> <!-- /container -->
