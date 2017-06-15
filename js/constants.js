@@ -1,10 +1,10 @@
 (function () {
     'use strict';
-
-    angular
-        .module('app')
+	var app = angular
+        .module('app', ['ngRoute', 'ngStorage'])
 		.constant( 'CONSTANTS', 
 		{
+			"env": "development",
 			"development" : {
 				"apiUrl" : 'http://localhost:3333'
 			},

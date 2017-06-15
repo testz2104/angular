@@ -16,7 +16,7 @@
 				$scope.errorMsg = success.message;
 			}
 		}, function(error){
-			$log.info(error);
+			//$log.info(error);
 		});
 		
 		$scope.addImage = function() {

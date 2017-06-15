@@ -1,28 +1,30 @@
 // Code goes here
 
 (function(){
-	var app = angular
-        .module('app', ['ngRoute'])
-        .config(config)
+	'use strict';
+	
+	angular.module('app')
+		.config(config)
         .run(run);
 
     config.$inject = ['$routeProvider', '$locationProvider'];
     function config($routeProvider, $locationProvider) {
+	 
         $routeProvider
 			.when('/images', {
                 templateUrl: 'templates/images.html',
                 controller: 'ImageController',
-				auth: true
+				secure: true
             })
 			.when('/images/add', {
                 templateUrl: 'templates/image_add.html',
                 controller: 'ImageController',
-				auth: true
+				secure: true
             })
             .when('/login', {
                 templateUrl: 'templates/login.html',
                 controller: 'LoginController',
-				auth: false
+				secure: false
             })
             /* .when('/user/:username', {
                 templateUrl: 'user.html',
@@ -31,21 +33,21 @@
             .otherwise({redirectTo: '/login'});
     }
 	
-	run.$inject = ['$rootScope', '$location', '$http', '$log'];
-    function run($rootScope, $location, $http, $log) {
+	run.$inject = ['$rootScope', '$location', '$http', '$localStorage', '$log'];
+    function run($rootScope, $location, $http, $localStorage, $log) {
         // keep user logged in after page refresh
-		$rootScope.globals = sessionStorage.getItem('globals') || {};
-		$log.info($rootScope.globals.currentUser);
-        if ($rootScope.globals && $rootScope.globals.currentUser && $rootScope.globals.currentUser.authdata) {
-            $http.defaults.headers.common['Authorization'] = 'Bearer ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
-        }
+		$rootScope.globals = $localStorage.globals || {};
 
-        $rootScope.$on('$locationChangeStart', function (event, next, current) {
-			$log.info($rootScope.globals.currentUser);
+        $rootScope.$on('$routeChangeStart', function (event, next, current) {
             // redirect to login page if not logged in and trying to access a restricted page
-            if (!$rootScope.globals || !$rootScope.globals.currentUser) {
-				$location.path('/login');
-            }
+			if (next && next.$$route && next.$$route.secure) {
+				if ($rootScope.globals && $rootScope.globals.authdata) {
+					$http.defaults.headers.common['Authorization'] = 'Bearer ' + $rootScope.globals.authdata; // jshint ignore:line
+				}
+				if (!$rootScope.globals.authdata) {
+					$location.path('/login');
+				}
+			}
         });
     }
 }());

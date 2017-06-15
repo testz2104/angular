@@ -5,8 +5,8 @@
         .module('app')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$rootScope', '$timeout', '$log'];
-    function AuthenticationService($http, $rootScope, $timeout, $log) {
+    AuthenticationService.$inject = ['$http', '$rootScope', '$localStorage', '$window', '$timeout', 'CONSTANTS', '$log'];
+    function AuthenticationService($http, $rootScope, $localStorage, $window, $timeout, CONSTANTS, $log) {
         var service = {};
 
         service.Login = Login;
@@ -16,7 +16,6 @@
         return service;
 
         function Login(username, password, callback) {
-
             /* Dummy authentication for testing, uses $timeout to simulate api call
              ----------------------------------------------*/
             /* $timeout(function () {
@@ -36,7 +35,7 @@
              ----------------------------------------------*/
 			$http({
 				method: "POST",
-				url: 'http://localhost:3333/users/login',
+				url: CONSTANTS.development.apiUrl+'/users/login',
 				data: { username: username, password: password }
 			}).then(
 				function(success) {
@@ -51,19 +50,17 @@
         }
 
         function SetCredentials(username, token) {
-			$rootScope.globals = {
-				currentUser: {
-					'username': username,
-					'authdata': token
-				}
-			};
+			var currentUser = {'username': username,'authdata': token};
+			$localStorage.globals = currentUser;
+			$rootScope.globals = currentUser;
             $http.defaults.headers.common['Authorization'] = 'Bearer ' + token; // jshint ignore:line
-			sessionStorage.setItem('globals', $rootScope.globals);
         }
 
         function ClearCredentials() {
             // $cookieStore.remove('globals');
-            sessionStorage.removeItem('globals');
+            delete $localStorage.globals;
+			$localStorage.$reset();
+			$rootScope.globals = '';
             $http.defaults.headers.common.Authorization = 'Bearer';
         }
     }
