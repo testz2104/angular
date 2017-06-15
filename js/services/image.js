@@ -18,7 +18,7 @@
         function GetAllImagesOfUser() {
 			return $http({
 				method: "GET",
-				url: CONSTANTS.development.apiUrl+'/images'
+				url: CONSTANTS[CONSTANTS.env].apiUrl+'/images'
 			});
         }
 

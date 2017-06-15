@@ -35,7 +35,7 @@
              ----------------------------------------------*/
 			$http({
 				method: "POST",
-				url: CONSTANTS.development.apiUrl+'/users/login',
+				url: CONSTANTS[CONSTANTS.env].apiUrl+'/users/login',
 				data: { username: username, password: password }
 			}).then(
 				function(success) {
